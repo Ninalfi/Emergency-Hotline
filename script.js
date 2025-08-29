@@ -24,6 +24,21 @@ function getText(index){
     });
   }
 
+  let copyCount = 0;
+const copyButtons = document.querySelectorAll(".copy-btn");
+
+copyButtons.forEach((btn) => {
+  btn.addEventListener("click", function () {
+    const index = btn.getAttribute("data-copy-target");
+    const number = getText(index);
+
+    navigator.clipboard.writeText(number);
+    copyCount++;
+    document.getElementById("copyCount").innerText = copyCount;
+
+    alert("Hotline number " + number + " copied!");
+  });
+});
 
  document.getElementById('emergency-call').addEventListener('click', function(){
     const coinCount = getNumber('coinCount');
@@ -41,7 +56,7 @@ function getText(index){
         getTotal('coinCount', totalCoin);
 
         const data = {
-            name: 'National Emergency',
+            name: 'National Emergency Number',
             number: '999',
             date: new Date().toLocaleTimeString()
 
@@ -61,7 +76,7 @@ function getText(index){
     }
         getTotal('coinCount', totalCoin);
         const data = {
-            name: 'police Helpline',
+            name: 'Police Helpline Number',
             number: '999',
             date: new Date().toLocaleTimeString()
 
@@ -82,7 +97,7 @@ document.getElementById('fireService-call').addEventListener('click', function()
     }
         getTotal('coinCount', totalCoin);
         const data = {
-            name: 'Fire Service',
+            name: 'Fire Service Number',
             number: '999',
             date: new Date().toLocaleTimeString()
 
@@ -154,7 +169,7 @@ document.getElementById('fireService-call').addEventListener('click', function()
         
 })
 
- document.getElementById('electricity-cal').addEventListener('click', function(){
+ document.getElementById('electricity-call').addEventListener('click', function(){
     const coinCount = getNumber('coinCount');
     const totalCoin = coinCount - 20;
     if(coinCount <= 0 || coinCount < 20){
@@ -216,26 +231,34 @@ document.getElementById('fireService-call').addEventListener('click', function()
         callHistory.push(data);
         
 })
+const callBtns = document.getElementsByClassName('history-btn');
 
-const btns = document.querySelectorAll('.copy-btn');
+for(const btn of callBtns){
+    btn.addEventListener('click', function () {
+      const historyContainer = document.getElementById('history-container');
+     
+      historyContainer.innerHTML = '';
 
-for(const btn of btns){
-    btn.addEventListener('click', async function () {
-        const index = btn.getAttribute('data-copy-target');
-        const text = getText(index);
+    for(const data of callHistory){
+        const div = document.createElement('div');
+        div.innerHTML = `
+        <div class="flex justify-between items-center bg-[#FAFAFA] mb-[8px] mt-[16px] p-4 rounded-[8px]">
+                <div>
+                    <h3 class="font-bold">${data.name}</h3>
+                    <p>${data.number}</p>
+                </div>
+                <p class="text-[#111111ff]">${data.date}</p>
+             </div>
+        `;
 
-        await navigator.clipboard.writeText(text);
-        alert('Copied: ' + text)
-        
-    })
+        historyContainer.appendChild(div);
+    }
+    
+})
 }
- const copyBtns = document.getElementsByClassName('copy-btn');//heart 
 
-  for (let btn of copyBtns) {
-    btn.addEventListener('click', function() {
-         const  copyCount = getNumber('copyCount');
-          const totalCopy =  copyCount + 1;
-          getTotal('copyCount', totalCopy);
-    });
-  }
-
+document.getElementById("clr-history-btn").addEventListener("click", function () {
+  const clearHistory= document.getElementById('history-container');
+    clearHistory.innerHTML = "";
+  callHistory.length = 0;
+});
